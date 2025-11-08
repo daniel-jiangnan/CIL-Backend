@@ -5,6 +5,9 @@ from typing import List, Optional, Dict, Any
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+from fastapi import UploadFile, File
+from fastapi.responses import StreamingResponse
+
 
 # --- Optional: load environment from .env ---
 try:
@@ -27,7 +30,7 @@ MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o-mini")
 
 # --- Load services from YAML ---
 import yaml
-with open("services.yaml", "r", encoding="utf-8") as f:
+with open("CIL-services.yaml", "r", encoding="utf-8") as f:
     SERVICES = yaml.safe_load(f)
 
 CATEGORIES: List[str] = list(SERVICES.keys())
@@ -193,3 +196,42 @@ class BatchResponse(BaseModel):
 @app.post("/classify:batch", response_model=BatchResponse)
 def classify_batch(body: BatchRequest):
     return BatchResponse(results=[classify(t, body.top_k) for t in body.items])
+
+
+@app.post("/classify:voice", response_model=ClassifyResponse)
+async def classify_voice(file: UploadFile = File(...), top_k: int = 3):
+    if not (_HAS_OPENAI and OPENAI_API_KEY):
+        raise RuntimeError("LLM client not configured")
+
+    # 1) Speech → Text
+    client = OpenAI(api_key=OPENAI_API_KEY, base_url=OPENAI_BASE_URL)
+    audio_bytes = await file.read()
+
+    transcript = client.audio.transcriptions.create(
+        model="whisper-1",
+        file=("audio.wav", audio_bytes, file.content_type)
+    )
+
+    text = transcript.text.strip()
+
+    return classify(text, top_k=top_k)
+
+
+@app.post("/classify:voice:reply")
+async def classify_and_speak(body: ClassifyRequest):
+    result = classify(body.text.strip(), top_k=body.top_k)
+
+    speak_text = f"The best match is {result.best.category}. " \
+                 f"{result.best.description or ''}"
+
+    client = OpenAI(api_key=OPENAI_API_KEY, base_url=OPENAI_BASE_URL)
+    speech = client.audio.speech.create(
+        model="gpt-4o-mini-tts",
+        voice="alloy",
+        input=speak_text,
+    )
+
+    return StreamingResponse(
+        speech.stream(),
+        media_type="audio/mpeg"
+    )
