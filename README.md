@@ -42,7 +42,7 @@ pip install -r requirements.txt
 5. **Run the project**
 
 ```bash
-python main.py
+uvicorn reference:app --reload --port 8000
 ```
 
 ---
