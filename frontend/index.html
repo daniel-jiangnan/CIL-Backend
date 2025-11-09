@@ -2,16 +2,94 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CIL Voice Chat</title>
+<title>CIL Voice Assistant</title>
+
 <style>
-  body { font-family: sans-serif; max-width: 600px; margin: 40px auto; }
-  #chat { border: 1px solid #ccc; padding: 12px; height: 400px; overflow-y: auto; white-space: pre-wrap; }
-  .me { color: #0055ff; margin-bottom: 8px; }
-  .bot { color: #009933; margin-bottom: 8px; }
-  button { padding: 8px 12px; margin-top: 12px; }
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    background: #f5f7fa;
+    margin: 0;
+    padding: 40px 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 680px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    padding: 28px;
+  }
+
+  h2 {
+    text-align: center;
+    margin-top: 0;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  #chat {
+    height: 420px;
+    overflow-y: auto;
+    padding: 14px;
+    border-radius: 10px;
+    background: #fafafa;
+    border: 1px solid #e3e3e3;
+  }
+
+  .msg {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 14px;
+    line-height: 1.4;
+    font-size: 15px;
+    display: inline-block;
+    clear: both;
+  }
+
+  .me {
+    background: #d9e8ff;
+    color: #003d88;
+    float: right;
+    text-align: right;
+    border-bottom-right-radius: 4px;
+  }
+
+  .bot {
+    background: #e6f7ea;
+    color: #075c2b;
+    float: left;
+    border-bottom-left-radius: 4px;
+  }
+
+  #micButton {
+    width: 100%;
+    font-size: 18px;
+    padding: 14px;
+    margin-top: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #007bff;
+    color: white;
+    transition: 0.2s;
+  }
+
+  #micButton:hover {
+    background: #005ec9;
+  }
+
+  #micButton.listening {
+    background: #e33b3b;
+  }
 </style>
+
 </head>
 <body>
+<div class="container">
 
 <h2>CIL Voice Assistant</h2>
 <div id="chat"></div>
@@ -23,104 +101,98 @@ let recognizing = false;
 let recognition;
 
 function speak(text) {
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = "en-US";  
-    utter.rate = 1.0;
-    speechSynthesis.cancel(); 
-    speechSynthesis.speak(utter);
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = "en-US";  
+  utter.rate = 1.0;
+  speechSynthesis.cancel(); 
+  speechSynthesis.speak(utter);
 }
 
-// === initilize vioce recognition ===
 if ('webkitSpeechRecognition' in window) {
-    recognition = new webkitSpeechRecognition();
-    recognition.lang = 'en-US'; 
-    recognition.continuous = false;
-    recognition.interimResults = false;
+  recognition = new webkitSpeechRecognition();
+  recognition.lang = 'en-US'; 
+  recognition.continuous = false;
+  recognition.interimResults = false;
 
-    recognition.onresult = function(event) {
-        const text = event.results[0][0].transcript;
-        addMessage("user", text);
-        sendToServer(text);
-    };
+  recognition.onresult = function(event) {
+    const text = event.results[0][0].transcript;
+    addMessage("user", text);
+    sendToServer(text);
+  };
 
-    recognition.onend = function() {
-        recognizing = false;
-        document.getElementById("micButton").innerText = "🎤 Start Speaking";
-    };
+  recognition.onend = function() {
+    recognizing = false;
+    document.getElementById("micButton").innerText = "🎤 Start Speaking";
+    document.getElementById("micButton").classList.remove("listening");
+  };
+
 } else {
-    alert("Your browser does not support speech recognition. Use Chrome.");
+  alert("Your browser does not support speech recognition. Please use Google Chrome.");
 }
 
-// === UI: Append chat messages ===
 function addMessage(role, content) {
-    messages.push({ role, content });
-    const chat = document.getElementById("chat");
-    const div = document.createElement("div");
-    div.className = role === "user" ? "me" : "bot";
-    div.textContent = (role === "user" ? "👤 You: " : "🤖 Bot: ") + content;
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
+  messages.push({ role, content });
+  const chat = document.getElementById("chat");
+  const div = document.createElement("div");
+  div.className = "msg " + (role === "user" ? "me" : "bot");
+  div.textContent = content;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
 }
 
-// === send to backend /chat/stream，streaming ===
 async function sendToServer(userText) {
-    addMessage("assistant", "");
-    let lastBotIndex = messages.length - 1;
+  addMessage("assistant", "");
+  let botMessage = "";
 
-    const response = await fetch("https://cil-backend-reference.onrender.com/chat/stream", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            organization: "default",
-            messages: messages
-        })
-    });
+  const response = await fetch("https://cil-backend-reference.onrender.com/chat/stream", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      organization: "default",
+      messages: messages
+    })
+  });
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder("utf-8");
-    let botMessage = "";
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
 
-    while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        botMessage += decoder.decode(value);
-        updateLastBotMessage(botMessage);
-    }
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    botMessage += decoder.decode(value);
+    updateLastBotMessage(botMessage);
+  }
 
-    messages.push({ role: "assistant", content: botMessage.trim() });
-
-    // read it out
-    speak(botMessage.trim());
-
-    // auto continue
-    startListening();
+  messages.push({ role: "assistant", content: botMessage.trim() });
+  speak(botMessage.trim());
+  startListening();
 }
 
-
-
-// === Stream：realtime show las tsentence ===
 function updateLastBotMessage(text) {
-    const chat = document.getElementById("chat");
-    let last = chat.querySelector(".bot:last-child");
-    if (!last) {
-        last = document.createElement("div");
-        last.className = "bot";
-        chat.appendChild(last);
-    }
-    last.textContent = "🤖 Bot: " + text;
-    chat.scrollTop = chat.scrollHeight;
+  const chat = document.getElementById("chat");
+  let last = chat.querySelector(".bot:last-child");
+  if (!last) {
+    last = document.createElement("div");
+    last.className = "msg bot";
+    chat.appendChild(last);
+  }
+  last.textContent = text;
+  chat.scrollTop = chat.scrollHeight;
 }
 
-// === start voice recognition===
 function startListening() {
-    if (recognition && !recognizing) {
-        recognizing = true;
-        document.getElementById("micButton").innerText = "🎙️ Listening...";
-        recognition.start();
-    }
+  if (recognition && !recognizing) {
+    recognizing = true;
+    const btn = document.getElementById("micButton");
+    btn.innerText = "🎙️ Listening...";
+    btn.classList.add("listening");
+    recognition.start();
+  }
 }
 
 document.getElementById("micButton").onclick = startListening;
 </script>
+
+</div>
 </body>
 </html>
