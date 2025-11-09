@@ -67,7 +67,7 @@ async function sendToServer(userText) {
     addMessage("assistant", "");
     let lastBotIndex = messages.length - 1;
 
-    const response = await fetch("http://localhost:8000/chat/stream", {
+    const response = await fetch("https://cil-backend-reference.onrender.com/chat/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
