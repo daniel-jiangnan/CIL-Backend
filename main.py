@@ -2,6 +2,8 @@ from __future__ import annotations
 import json
 import os
 from typing import List, Optional, Dict, Any
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
@@ -13,9 +15,16 @@ import yaml
 # DeepSeek (OpenAI Compatible Client)
 from openai import OpenAI
 
+# Appointment Management
+from consumer_book_appointment import (
+    get_appointments_by_date,
+    get_matched_appointments,
+)
+
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 DEEPSEEK_BASE_URL = "https://api.deepseek.com"
 DEEPSEEK_MODEL = "deepseek-chat"
+
 
 # ======================================================
 #  LOAD MULTI-ORGANIZATION CONFIG  (NEW YAML SCHEMA)
@@ -125,10 +134,14 @@ if "default" not in ORG_PROGRAMS:
 # ======================================================
 #   Models
 # ======================================================
+
+
+# === AI Classification Models ===
 class ClassifyRequest(BaseModel):
     text: str = Field(...)
     top_k: int = 2
     organization: str = "default"
+
 
 class Option(BaseModel):
     category: str
@@ -136,10 +149,67 @@ class Option(BaseModel):
     reasoning: Optional[str] = None
     description: Optional[str] = None
 
+
 class ClassifyResponse(BaseModel):
     best: Option
     alternatives: List[Option]
     used_fallback: bool = False
+
+
+# === Appointment Management Models ===
+class SearchByDateRequest(BaseModel):
+    """Request model for searching appointments by date"""
+
+    target_date: str
+    service_account_file: str = "service_accounts.txt"
+    calendar_ids_file: str = "calendars.json"
+
+
+class SearchByCustomerRequest(BaseModel):
+    """Request model for searching appointments by customer details"""
+
+    first_name: str
+    last_name: str
+    appointment_date: str
+    service: str
+    service_account_file: str = "service_accounts.txt"
+    calendar_ids_file: str = "calendars.json"
+
+
+class AppointmentResponse(BaseModel):
+    """Response model for appointment details"""
+
+    event_id: str
+    calendar_id: str
+    event_summary: str
+    attendee_email: Optional[str]
+    attendee_name: str
+    datetime: str
+    date: str
+    time: str
+    service_account: str
+
+
+class SearchByDateResponse(BaseModel):
+    """Response model for date-based search"""
+
+    success: bool
+    message: str
+    date: str
+    count: int
+    appointments: List[AppointmentResponse]
+
+
+class SearchByCustomerResponse(BaseModel):
+    """Response model for customer-based search"""
+
+    success: bool
+    message: str
+    customer_name: str
+    search_date: str
+    service: str
+    count: int
+    appointments: List[AppointmentResponse]
 
 # ======================================================
 #   Keyword fallback 
@@ -174,6 +244,7 @@ def _keyword_guess(text: str, top_k: int, programs: Dict[str, Any], program_keyw
         confidence=0.6,
         reasoning="Keyword match",
         description=programs.get(best_cat, {}).get("description", ""),
+
     )
     alt_opts = [
         Option(
@@ -215,19 +286,31 @@ def _call_llm(text: str, top_k: int, programs: Dict[str, Any], categories: List[
         }
 
     system_prompt = f"""
-You are a routing assistant for a Center for Independent Living (CIL).
-Classify the user's message into ONE of these program categories (top-level programs):
-{json.dumps(categories, ensure_ascii=False)}
+    You are a warm and helpful intake navigator at a Center for Independent Living.
 
-Return STRICT JSON ONLY:
-{{
-  "best": {{"category": string, "confidence": number, "reasoning": string}},
-  "alternatives": [{{"category": string, "confidence": number, "reasoning": string}}]
-}}
+    *** HARD RULES (DO NOT BREAK) ***
+    1. You MUST NOT invent or guess any program or service names.
+    2. You may ONLY mention services that appear in the list below.
+    3. If you cannot confidently identify ONE specific service, ask **ONE** short clarifying question instead of guessing.
+    4. If the user request matches a program but not a specific service, say the program name but clearly state that you need one clarification before recommending a service.
+    5. When recommending a service, ALWAYS include:
+    - Service Name (exact `service.key`)
+    - Phone (if exists)
+    - Contact person name & email (if exists)
 
-Program definitions (each program may contain multiple services):
-{json.dumps(compact_programs, ensure_ascii=False, indent=2)}
-"""
+    *** PRIORITY ***
+    - ALWAYS prefer recommending a **service** over a program (if identifiable).
+    - Keep answers short (2–4 sentences), friendly, and concrete.
+
+    *** ALLOWED PROGRAMS & SERVICES (YOU CANNOT USE ANYTHING OUTSIDE THIS LIST) ***
+    {_programs_for_prompt(programs)}
+
+    You must treat this list as the ONLY valid universe of programs and services.
+    Do NOT create new names.
+    Do NOT modify names.
+    Do NOT guess missing information.
+    """
+
 
     user_prompt = f"Message:\n{text}\nTop-K: {top_k}"
 
@@ -235,7 +318,7 @@ Program definitions (each program may contain multiple services):
         model=DEEPSEEK_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
+            {"role": "user", "content": user_prompt},
         ],
         temperature=0,
         max_tokens=300,
@@ -324,7 +407,7 @@ def stream_chat(messages, organization="default"):
         model=DEEPSEEK_MODEL,
         messages=[{"role": "system", "content": system_prompt}] + messages,
         stream=True,
-        temperature=0.3,
+        temperature=0.1,
         max_tokens=300,
     )
 
@@ -347,6 +430,7 @@ def classify(text: str, top_k: int = 2, organization: str = "default") -> Classi
         # fall back no programs
         best = Option(category="Unknown", confidence=0.0, reasoning="No programs loaded", description=None)
         return ClassifyResponse(best=best, alternatives=[], used_fallback=True)
+
 
     try:
         data = _call_llm(text, top_k, programs, categories)
@@ -375,7 +459,9 @@ def classify(text: str, top_k: int = 2, organization: str = "default") -> Classi
                 )
             )
 
-        return ClassifyResponse(best=best_opt, alternatives=alt_opts, used_fallback=False)
+        return ClassifyResponse(
+            best=best_opt, alternatives=alt_opts, used_fallback=False
+        )
 
     except Exception:
         # fall back to keyword matching
@@ -393,15 +479,164 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+# ======================================================
+#   Appointment Management Endpoints
+# ======================================================
+LOCAL_TZ = ZoneInfo("America/Los_Angeles")
+
+
+@app.post(
+    "/api/appointments/by-date",
+    response_model=SearchByDateResponse,
+    summary="Search appointments by date",
+    description="Search all appointments for a specific date (Admin view)",
+)
+async def search_appointments_by_date(request: SearchByDateRequest):
+    """Search all appointments for a specific date (Admin view)"""
+    try:
+        # Parse the date
+        try:
+            if "T" in request.target_date:
+                target_date = datetime.fromisoformat(request.target_date).replace(
+                    tzinfo=LOCAL_TZ
+                )
+            else:
+                target_date = datetime.strptime(
+                    request.target_date, "%Y-%m-%d"
+                ).replace(tzinfo=LOCAL_TZ)
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid date format. Use 'YYYY-MM-DD' or 'YYYY-MM-DDTHH:MM:SS'",
+            )
+
+        # Get appointments
+        appointments = get_appointments_by_date(
+            target_date=target_date,
+            service_account_file=request.service_account_file,
+            calendar_ids_file=request.calendar_ids_file,
+        )
+
+        # Format response
+        formatted_appointments = [
+            AppointmentResponse(
+                event_id=appt["event_id"],
+                calendar_id=appt["calendar_id"],
+                event_summary=appt["event_summary"],
+                attendee_email=appt["attendee_email"],
+                attendee_name=appt["attendee_name"],
+                datetime=appt["datetime"].isoformat(),
+                date=appt["date"].isoformat(),
+                time=appt["time"].isoformat(),
+                service_account=appt["service_account"],
+            )
+            for appt in appointments
+        ]
+
+        return SearchByDateResponse(
+            success=True,
+            message=f"Found {len(appointments)} appointment(s) on {request.target_date}",
+            date=request.target_date,
+            count=len(appointments),
+            appointments=formatted_appointments,
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error searching appointments: {str(e)}",
+        )
+
+
+@app.post(
+    "/api/appointments/by-customer",
+    response_model=SearchByCustomerResponse,
+    summary="Search appointments by customer details",
+    description="Search appointments for a specific customer by their information",
+)
+async def search_appointments_by_customer(request: SearchByCustomerRequest):
+    """Search appointments for a specific customer"""
+    try:
+        # Parse the date
+        try:
+            if "T" in request.appointment_date:
+                appointment_date = datetime.fromisoformat(
+                    request.appointment_date
+                ).replace(tzinfo=LOCAL_TZ)
+            else:
+                appointment_date = datetime.strptime(
+                    request.appointment_date, "%Y-%m-%d"
+                ).replace(tzinfo=LOCAL_TZ)
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid date format. Use 'YYYY-MM-DD' or 'YYYY-MM-DDTHH:MM:SS'",
+            )
+
+        # Get matched appointments
+        appointments = get_matched_appointments(
+            first_name=request.first_name,
+            last_name=request.last_name,
+            start_time=appointment_date,
+            service=request.service,
+            service_account_file=request.service_account_file,
+            calendar_ids_file=request.calendar_ids_file,
+        )
+
+        # Format response
+        formatted_appointments = [
+            AppointmentResponse(
+                event_id=appt["event_id"],
+                calendar_id=appt["calendar_id"],
+                event_summary=appt["event_summary"],
+                attendee_email=appt["attendee_email"],
+                attendee_name=appt["attendee_name"],
+                datetime=appt["datetime"].isoformat(),
+                date=appt["date"].isoformat(),
+                time=appt["time"].isoformat(),
+                service_account=appt["service_account"],
+            )
+            for appt in appointments
+        ]
+
+        return SearchByCustomerResponse(
+            success=True,
+            message=f"Found {len(appointments)} appointment(s) for {request.first_name} {request.last_name}",
+            customer_name=f"{request.first_name} {request.last_name}",
+            search_date=request.appointment_date,
+            service=request.service,
+            count=len(appointments),
+            appointments=formatted_appointments,
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error searching appointments: {str(e)}",
+        )
+
+
+# ======================================================
+#   AI Classification Endpoints
+# ======================================================
+
 
 @app.post("/classify", response_model=ClassifyResponse)
 def classify_endpoint(body: ClassifyRequest):
     if not body.text.strip():
         raise HTTPException(status_code=400, detail="Empty text")
     return classify(body.text.strip(), top_k=body.top_k, organization=body.organization)
+
 
 @app.post("/chat/stream")
 def chat_stream(body: Dict[str, Any]):
@@ -412,6 +647,5 @@ def chat_stream(body: Dict[str, Any]):
         raise HTTPException(status_code=400, detail="messages required")
 
     return StreamingResponse(
-        stream_chat(messages, organization),
-        media_type="text/plain"
+        stream_chat(messages, organization), media_type="text/plain"
     )

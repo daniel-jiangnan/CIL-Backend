@@ -1,3 +1,24 @@
 venv/
 __pycache__/
+.mypy_cache/
 
+# Google Cloud Service Account Credentials (敏感数据 - DO NOT COMMIT)
+*.json
+!calendars.json
+
+# Environment files
+.env
+.env.local
+
+# Test scripts
+test_env.sh
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
