@@ -10,8 +10,12 @@ from googleapiclient.discovery import build
 
 
 # === Configuration ===
-SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_FILE", "center-for-independent-living-95cb120a7f0e.json")
-SERVICE_ACCOUNTS_JSON = os.getenv("SERVICE_ACCOUNTS_JSON", None)  # JSON string with all service account credentials
+SERVICE_ACCOUNT_FILE = os.getenv(
+    "SERVICE_ACCOUNT_FILE", "center-for-independent-living-95cb120a7f0e.json"
+)
+SERVICE_ACCOUNTS_JSON = os.getenv(
+    "SERVICE_ACCOUNTS_JSON", None
+)  # JSON string with all service account credentials
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
 LOCAL_TZ = ZoneInfo("America/Los_Angeles")
@@ -61,40 +65,42 @@ def load_service_accounts_from_file(txt_file: str) -> List[str]:
 def load_service_accounts_from_env() -> List[str]:
     """
     Load service account credentials from environment variable SERVICE_ACCOUNTS_JSON
-    
+
     Expected format:
     SERVICE_ACCOUNTS_JSON='[
       {"path": "org1.json", "content": {...}},
       {"path": "org2.json", "content": {...}}
     ]'
-    
+
     Returns:
         List of service account file paths created from environment variable
     """
     if not SERVICE_ACCOUNTS_JSON:
         return []
-    
+
     try:
         accounts_data = json.loads(SERVICE_ACCOUNTS_JSON)
         account_files = []
-        
+
         for account in accounts_data:
             path = account.get("path")
             content = account.get("content")
-            
+
             if path and content:
                 # Create temporary directory if needed
-                os.makedirs(os.path.dirname(path), exist_ok=True) if os.path.dirname(path) else None
-                
+                os.makedirs(os.path.dirname(path), exist_ok=True) if os.path.dirname(
+                    path
+                ) else None
+
                 # Write credential JSON to file
                 with open(path, "w") as f:
                     json.dump(content, f)
-                
+
                 account_files.append(path)
                 print(f"✅ Loaded service account from environment: {path}")
-        
+
         return account_files
-    
+
     except json.JSONDecodeError as e:
         print(f"❌ Failed to parse SERVICE_ACCOUNTS_JSON: {e}")
         return []
@@ -167,9 +173,11 @@ def get_appointments_by_date(
         # If no account files found and SERVICE_ACCOUNTS_JSON env var is set, load from there
         if not account_files and SERVICE_ACCOUNTS_JSON:
             account_files = load_service_accounts_from_env()
-        
+
         if not account_files:
-            print("⚠️  No service accounts found. Please set SERVICE_ACCOUNTS_JSON env var or provide account files.")
+            print(
+                "⚠️  No service accounts found. Please set SERVICE_ACCOUNTS_JSON env var or provide account files."
+            )
             return []
 
         # Load calendar IDs from config file
@@ -359,9 +367,11 @@ def get_matched_appointments(
         # If no account files found and SERVICE_ACCOUNTS_JSON env var is set, load from there
         if not account_files and SERVICE_ACCOUNTS_JSON:
             account_files = load_service_accounts_from_env()
-        
+
         if not account_files:
-            print("⚠️  No service accounts found. Please set SERVICE_ACCOUNTS_JSON env var or provide account files.")
+            print(
+                "⚠️  No service accounts found. Please set SERVICE_ACCOUNTS_JSON env var or provide account files."
+            )
             return []
 
         # Load calendar IDs from config file
