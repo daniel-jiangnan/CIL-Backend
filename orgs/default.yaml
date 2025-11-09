@@ -1,0 +1,166 @@
+Assistive Technology:
+  description: >
+    Provides support in identifying, trying, obtaining, and maintaining assistive devices
+    that improve daily living, communication, mobility, and access. This includes device
+    lending, short-term loans, repairs, feature training, and help evaluating whether a
+    device is a good fit. Examples include power wheelchairs, mobility scooters, walkers,
+    hearing amplification devices, magnifiers, text-to-speech tools, screen readers, and
+    speech-generating communication devices.
+  keywords:
+    - wheelchair
+    - mobility device
+    - hearing device
+    - AAC
+    - communication device
+    - screen reader
+    - assistive tech
+    - equipment loan
+
+Diversion & Transitions:
+  description: >
+    Assists individuals in leaving nursing homes, hospitals, mental health facilities,
+    or other institutions to return to community-based living. Also helps prevent
+    unnecessary institutionalization by identifying supports that allow people to
+    safely remain housed in the community. Services may include housing coordination,
+    benefits support, personal care planning, transportation setup, and care-team
+    collaboration.
+  keywords:
+    - transition
+    - discharge planning
+    - nursing home
+    - institution
+    - move back home
+    - avoid placement
+    - independent living transition
+
+Emergency Preparedness:
+  description: >
+    Helps individuals prepare for disasters, power shut-offs, and emergency situations,
+    with a focus on accessibility needs. Services include individualized emergency plans,
+    enrolling in emergency alert systems, training on creating go-bags and stay-kits,
+    and helping people who rely on powered medical equipment obtain or maintain backup
+    batteries and power solutions. Also offers peer-led community preparedness workshops.
+  keywords:
+    - emergency plan
+    - disaster readiness
+    - power shutoff
+    - backup battery
+    - evacuation plan
+    - wildfire
+    - earthquake
+
+Housing Assistance:
+  description: >
+    Provides guidance and support with searching for affordable and accessible housing,
+    applying to housing programs, understanding waitlists, and navigating landlord
+    relationships. Also assists with writing reasonable accommodation requests, such as
+    service animal approval, rent date adjustments, or changes to unit accessibility.
+  keywords:
+    - housing search
+    - affordable housing
+    - Section 8
+    - landlord communication
+    - rent issues
+    - housing application
+    - reasonable accommodation
+
+Independent Living Peer Support:
+  description: >
+    One-on-one support from someone with lived disability experience who can help with
+    emotional support, confidence building, advocacy skills, navigating accessibility
+    challenges, and connecting to community resources. Peer support focuses on shared
+    experience rather than clinical intervention.
+  keywords:
+    - talk to someone
+    - peer mentor
+    - emotional support
+    - support group
+    - lived experience
+    - community connection
+
+Personal Attendant Services:
+  description: >
+    Helps individuals learn how to find, hire, train, schedule, and manage personal care
+    attendants for support with daily living activities. Includes guidance on communication,
+    backup planning, and understanding programs such as IHSS. Does not hire attendants
+    directly, but teaches people how to manage their own care team.
+  keywords:
+    - caregiver
+    - attendant
+    - IHSS
+    - personal care worker
+    - home care support
+    - care scheduling
+    - ADL assistance
+
+Residential Access:
+  description: >
+    Offers home accessibility evaluations and assists in planning or implementing
+    modifications that increase safety and independence in the home. Modifications may
+    include ramps, grab bars, handheld shower heads, widened doorways, lowered counters,
+    and accessible doorbells or alarms. Some services are free for eligible Berkeley
+    residents; consultation available for others.
+  keywords:
+    - ramp
+    - grab bar
+    - bathroom accessibility
+    - home modification
+    - safety equipment
+    - accessibility evaluation
+
+Senior Services:
+  description: >
+    Supports older adults in remaining independent, socially connected, and safe in their
+    homes and communities. Services often include fall-prevention education, benefits
+    counseling for Medicare/Medicaid, technology support, wellness check-ins, social groups,
+    and help navigating community aging resources.
+  keywords:
+    - senior
+    - aging
+    - Medicare
+    - elder support
+    - prevent falls
+    - senior social group
+
+Systems Change Advocacy Overview:
+  description: >
+    Provides education, leadership development, and opportunities to participate in
+    disability rights advocacy efforts at the local, state, and national level. Supports
+    individuals in learning how to tell their story, submit public comments, meet with
+    representatives, and engage in policy change and collective action campaigns.
+  keywords:
+    - advocacy
+    - disability rights
+    - public policy
+    - ADA
+    - civic engagement
+    - speak up
+    - community organizing
+
+Travel Program Overview:
+  description: >
+    Supports individuals in learning how to safely, confidently, and independently navigate
+    local transit systems, including buses, BART, and paratransit. Services include
+    personalized route training, group travel workshops, support with paratransit eligibility
+    applications, and wheelchair securement education.
+  keywords:
+    - paratransit
+    - bus
+    - BART
+    - travel training
+    - mobility training
+    - transportation access
+
+Youth Programs:
+  description: >
+    Offers leadership development, social connection, independent living skill-building,
+    college and career readiness support, and community-based activities for youth and young
+    adults with disabilities. Focuses on confidence, identity, community belonging, and the
+    transition to adulthood.
+  keywords:
+    - youth
+    - young adult
+    - high school
+    - transition age
+    - college support
+    - leadership development

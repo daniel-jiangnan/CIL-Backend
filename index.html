@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CIL Voice Chat</title>
+<style>
+  body { font-family: sans-serif; max-width: 600px; margin: 40px auto; }
+  #chat { border: 1px solid #ccc; padding: 12px; height: 400px; overflow-y: auto; white-space: pre-wrap; }
+  .me { color: #0055ff; margin-bottom: 8px; }
+  .bot { color: #009933; margin-bottom: 8px; }
+  button { padding: 8px 12px; margin-top: 12px; }
+</style>
+</head>
+<body>
+
+<h2>CIL Voice Assistant</h2>
+<div id="chat"></div>
+<button id="micButton">🎤 Start Speaking</button>
+
+<script>
+let messages = []; 
+let recognizing = false;
+let recognition;
+
+function speak(text) {
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = "en-US";  // 如果是中文自动改 "zh-CN"
+    utter.rate = 1.0;
+    speechSynthesis.cancel(); // 防止叠音
+    speechSynthesis.speak(utter);
+}
+
+// === initilize vioce recognition ===
+if ('webkitSpeechRecognition' in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-US'; 
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onresult = function(event) {
+        const text = event.results[0][0].transcript;
+        addMessage("user", text);
+        sendToServer(text);
+    };
+
+    recognition.onend = function() {
+        recognizing = false;
+        document.getElementById("micButton").innerText = "🎤 Start Speaking";
+    };
+} else {
+    alert("Your browser does not support speech recognition. Use Chrome.");
+}
+
+// === UI: Append chat messages ===
+function addMessage(role, content) {
+    messages.push({ role, content });
+    const chat = document.getElementById("chat");
+    const div = document.createElement("div");
+    div.className = role === "user" ? "me" : "bot";
+    div.textContent = (role === "user" ? "👤 You: " : "🤖 Bot: ") + content;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+// === send to backend /chat/stream，streaming ===
+async function sendToServer(userText) {
+    addMessage("assistant", "");
+    let lastBotIndex = messages.length - 1;
+
+    const response = await fetch("http://localhost:8000/chat/stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            organization: "default",
+            messages: messages
+        })
+    });
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    let botMessage = "";
+
+    while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        botMessage += decoder.decode(value);
+        updateLastBotMessage(botMessage);
+    }
+
+    messages.push({ role: "assistant", content: botMessage.trim() });
+
+    // read it out
+    speak(botMessage.trim());
+
+    // auto continue
+    startListening();
+}
+
+
+
+// === Stream：realtime show las tsentence ===
+function updateLastBotMessage(text) {
+    const chat = document.getElementById("chat");
+    let last = chat.querySelector(".bot:last-child");
+    if (!last) {
+        last = document.createElement("div");
+        last.className = "bot";
+        chat.appendChild(last);
+    }
+    last.textContent = "🤖 Bot: " + text;
+    chat.scrollTop = chat.scrollHeight;
+}
+
+// === start voice recognition===
+function startListening() {
+    if (recognition && !recognizing) {
+        recognizing = true;
+        document.getElementById("micButton").innerText = "🎙️ Listening...";
+        recognition.start();
+    }
+}
+
+document.getElementById("micButton").onclick = startListening;
+</script>
+</body>
+</html>
