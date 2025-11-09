@@ -17,7 +17,6 @@ programs:
       - access equity
 
     services:
-
       - key: Campaigns & Initiatives
         phone: "(510) 841-4776"
         description: |
@@ -35,6 +34,7 @@ programs:
           - name: "Michai Freeman"
             email: "michai.freeman@gmail.com"
             phone: "(510) 841-4776"
+            booking_link: https://calendar.google.com/calendar/u/0?cid=YjY2ZWE5OTg4ZDVjNTI4NmZiOTNhZjhlNWU5M2JhNmJiODI1MzBlOTQ3Y2ZjYjRiNDE2YThkYWNkOTdmOGQxOUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t
 
       - key: Advocacy Training
         phone: "(510) 841-4776"
@@ -50,7 +50,6 @@ programs:
           - name: "Michai Freeman"
             email: "michai.freeman@gmail.com"
             phone: "(510) 841-4776"
-
 
   - name: Assistive Technology
     description: |-
@@ -168,7 +167,6 @@ programs:
       - disability transportation access
 
     services:
-
       - key: One-on-One Travel Training
         phone: "(510) 841-4776"
         description: |
@@ -244,7 +242,6 @@ programs:
             email: "lucky.maxwell@gmail.com"
             phone: "(510) 841-4776"
 
-
   - name: Core Services
     description: >
       Core Services at CIL focus on supporting people with disabilities through peer support,
@@ -262,7 +259,6 @@ programs:
       - senior wellness
 
     services:
-
       - key: Acquired Disability Group
         phone: "(510) 841-4776"
         description: |
@@ -438,7 +434,6 @@ programs:
             email: "robin.earth@gmail.com"
             phone: "(510) 841-4776"
 
-
   - name: Diversion and Transitions
     description: >
       CIL’s Diversion and Transitions Program supports people with disabilities in accessing
@@ -506,7 +501,6 @@ programs:
       - independent living safety
 
     services:
-
       - key: Individual Emergency Planning
         phone: "(510) 841-4776"
         description: |
@@ -609,7 +603,6 @@ programs:
           - name: "Sheela Gunn"
             email: "Sheela.gunn@gmail.com"
             phone: "(510) 841-4776"
-
 
   - name: Residential Access
     description: >

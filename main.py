@@ -81,12 +81,18 @@ def _load_org_file(path: str) -> Dict[str, Any]:
 
             sdesc = s.get("description", "") or ""
             sphone = s.get("phone", "") or ""
-            skw = [k.lower() for k in _ensure_list(s.get("keywords")) if isinstance(k, str)]
+            skw = [
+                k.lower() for k in _ensure_list(s.get("keywords")) if isinstance(k, str)
+            ]
             scontacts = _ensure_list(s.get("contacts"))
 
             #  service key as key
             # e.g. "Whill Sales" -> ["whill", "sales"]
-            skey_terms = [t.strip().lower() for t in skey.replace("/", " ").replace("&", " ").split() if t.strip()]
+            skey_terms = [
+                t.strip().lower()
+                for t in skey.replace("/", " ").replace("&", " ").split()
+                if t.strip()
+            ]
             all_s_keywords = list({*skw, *skey_terms})
 
             services_by_key[skey] = {
@@ -100,7 +106,7 @@ def _load_org_file(path: str) -> Dict[str, Any]:
 
         programs_by_name[pname] = {
             "description": pdesc,
-            "keywords": [k.lower() for k in collected_keywords],  
+            "keywords": [k.lower() for k in collected_keywords],
             "services": services_by_key,
         }
 
@@ -184,6 +190,8 @@ class AppointmentResponse(BaseModel):
     event_summary: str
     attendee_email: Optional[str]
     attendee_name: str
+    organizer_email: Optional[str]
+    organizer_name: Optional[str]
     datetime: str
     date: str
     time: str
@@ -211,10 +219,16 @@ class SearchByCustomerResponse(BaseModel):
     count: int
     appointments: List[AppointmentResponse]
 
+
 # ======================================================
-#   Keyword fallback 
+#   Keyword fallback
 # ======================================================
-def _keyword_guess(text: str, top_k: int, programs: Dict[str, Any], program_keywords: Dict[str, List[str]]) -> ClassifyResponse:
+def _keyword_guess(
+    text: str,
+    top_k: int,
+    programs: Dict[str, Any],
+    program_keywords: Dict[str, List[str]],
+) -> ClassifyResponse:
     t = (text or "").lower()
     scores: List[tuple[str, int]] = []
     for pname, kwlist in program_keywords.items():
@@ -233,7 +247,12 @@ def _keyword_guess(text: str, top_k: int, programs: Dict[str, Any], program_keyw
                 description=programs[best_cat].get("description", ""),
             )
         else:
-            best = Option(category="Unknown", confidence=0.0, reasoning="No programs loaded", description=None)
+            best = Option(
+                category="Unknown",
+                confidence=0.0,
+                reasoning="No programs loaded",
+                description=None,
+            )
         return ClassifyResponse(best=best, alternatives=[], used_fallback=True)
 
     best_cat = scores[0][0]
@@ -244,7 +263,6 @@ def _keyword_guess(text: str, top_k: int, programs: Dict[str, Any], program_keyw
         confidence=0.6,
         reasoning="Keyword match",
         description=programs.get(best_cat, {}).get("description", ""),
-
     )
     alt_opts = [
         Option(
@@ -259,6 +277,7 @@ def _keyword_guess(text: str, top_k: int, programs: Dict[str, Any], program_keyw
 
     return ClassifyResponse(best=best, alternatives=alt_opts, used_fallback=True)
 
+
 # ======================================================
 #   DeepSeek Non-Streaming Classification
 #   （categories = program name；services）
@@ -268,7 +287,6 @@ def _call_llm(text: str, top_k: int, programs: Dict[str, Any], categories: List[
         raise RuntimeError("DeepSeek API key not configured")
 
     client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
-
 
     compact_programs = {}
     for pname, pdata in programs.items():
@@ -297,6 +315,7 @@ def _call_llm(text: str, top_k: int, programs: Dict[str, Any], categories: List[
     - Service Name (exact `service.key`)
     - Phone (if exists)
     - Contact person name & email (if exists)
+    - Booking link (if exists)
 
     *** PRIORITY ***
     - ALWAYS prefer recommending a **service** over a program (if identifiable).
@@ -310,7 +329,6 @@ def _call_llm(text: str, top_k: int, programs: Dict[str, Any], categories: List[
     Do NOT modify names.
     Do NOT guess missing information.
     """
-
 
     user_prompt = f"Message:\n{text}\nTop-K: {top_k}"
 
@@ -327,6 +345,7 @@ def _call_llm(text: str, top_k: int, programs: Dict[str, Any], categories: List[
     raw = resp.choices[0].message.content or "{}"
     return json.loads(raw)
 
+
 # ======================================================
 #   Streaming Chat for Conversation
 # ======================================================
@@ -334,7 +353,9 @@ def _programs_for_prompt(programs: Dict[str, Any], max_services_each: int = 4) -
     lines = []
     for pname, pdata in programs.items():
         desc = (pdata.get("description") or "").strip()
-        lines.append(f"- Program: {pname} — {desc[:200]}{'...' if len(desc) > 200 else ''}")
+        lines.append(
+            f"- Program: {pname} — {desc[:200]}{'...' if len(desc) > 200 else ''}"
+        )
 
         sdict = pdata.get("services") or {}
         if not sdict:
@@ -349,9 +370,13 @@ def _programs_for_prompt(programs: Dict[str, Any], max_services_each: int = 4) -
                 # 展示最多前2个联系人
                 c_lines = []
                 for c in contacts[:2]:
-                    name = c.get("name","")
-                    email = c.get("email","")
-                    c_lines.append(f"{name}{f' <{email}>' if email else ''}")
+                    name = c.get("name", "")
+                    email = c.get("email", "")
+                    booking_link = c.get("booking_link", "")
+                    contact_str = f"{name}{f' <{email}>' if email else ''}"
+                    if booking_link:
+                        contact_str += f" [Book: {booking_link}]"
+                    c_lines.append(contact_str)
                 contacts_str = "; ".join(c_lines)
             else:
                 contacts_str = ""
@@ -372,7 +397,6 @@ def _programs_for_prompt(programs: Dict[str, Any], max_services_each: int = 4) -
     return "\n".join(lines)
 
 
-
 def stream_chat(messages, organization="default"):
     org = organization if organization in ORG_PROGRAMS else "default"
     programs = ORG_PROGRAMS.get(org, {})
@@ -388,6 +412,7 @@ def stream_chat(messages, organization="default"):
     - Contact person name(s)
     - Email(s)
     - Phone number(s)
+    - Booking link(s)
 
     Rules:
     - Keep responses short (2–4 sentences).
@@ -417,10 +442,13 @@ def stream_chat(messages, organization="default"):
         if content:
             yield content
 
+
 # ======================================================
 #   Classify Orchestrator
 # ======================================================
-def classify(text: str, top_k: int = 2, organization: str = "default") -> ClassifyResponse:
+def classify(
+    text: str, top_k: int = 2, organization: str = "default"
+) -> ClassifyResponse:
     org = organization if organization in ORG_PROGRAMS else "default"
     programs = ORG_PROGRAMS.get(org, {})
     program_keywords = ORG_KEYWORDS.get(org, {})
@@ -428,9 +456,13 @@ def classify(text: str, top_k: int = 2, organization: str = "default") -> Classi
 
     if not categories:
         # fall back no programs
-        best = Option(category="Unknown", confidence=0.0, reasoning="No programs loaded", description=None)
+        best = Option(
+            category="Unknown",
+            confidence=0.0,
+            reasoning="No programs loaded",
+            description=None,
+        )
         return ClassifyResponse(best=best, alternatives=[], used_fallback=True)
-
 
     try:
         data = _call_llm(text, top_k, programs, categories)
@@ -467,13 +499,14 @@ def classify(text: str, top_k: int = 2, organization: str = "default") -> Classi
         # fall back to keyword matching
         return _keyword_guess(text, top_k, programs, program_keywords)
 
+
 # ======================================================
 #   FastAPI
 # ======================================================
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -531,6 +564,8 @@ async def search_appointments_by_date(request: SearchByDateRequest):
                 event_summary=appt["event_summary"],
                 attendee_email=appt["attendee_email"],
                 attendee_name=appt["attendee_name"],
+                organizer_email=appt.get("organizer_email"),
+                organizer_name=appt.get("organizer_name"),
                 datetime=appt["datetime"].isoformat(),
                 date=appt["date"].isoformat(),
                 time=appt["time"].isoformat(),
@@ -599,6 +634,8 @@ async def search_appointments_by_customer(request: SearchByCustomerRequest):
                 event_summary=appt["event_summary"],
                 attendee_email=appt["attendee_email"],
                 attendee_name=appt["attendee_name"],
+                organizer_email=appt.get("organizer_email"),
+                organizer_name=appt.get("organizer_name"),
                 datetime=appt["datetime"].isoformat(),
                 date=appt["date"].isoformat(),
                 time=appt["time"].isoformat(),

@@ -9,25 +9,12 @@ from googleapiclient.discovery import build
 
 
 # === Configuration ===
-SERVICE_ACCOUNT_FILE = os.getenv(
-    "SERVICE_ACCOUNT_FILE", "center-for-independent-living-95cb120a7f0e.json"
-)
-# New format: {calendar_email: credentials_json}
 CALENDAR_CREDENTIALS = os.getenv("CALENDAR_CREDENTIALS", None)
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
 LOCAL_TZ = ZoneInfo("America/Los_Angeles")
 WORK_START = time(9, 0)
 WORK_END = time(18, 0)
-
-
-# === Build the Calendar API client ===
-def get_calendar_service():
-    creds = service_account.Credentials.from_service_account_file(
-        SERVICE_ACCOUNT_FILE, scopes=SCOPES
-    )
-    service = build("calendar", "v3", credentials=creds)
-    return service
 
 
 # === Core Appointment Functions ===
@@ -112,7 +99,7 @@ def load_calendar_ids_from_file(json_file: str = "calendars.json") -> List[str]:
 
 def get_appointments_by_date(
     target_date: datetime,
-    service_account_file: str | List[str] = None,
+    service_account_file: str | List[str] | None = None,
     calendar_ids_file: str = "calendars.json",
 ) -> List[Dict]:
     """
@@ -199,6 +186,9 @@ def get_appointments_by_date(
                             ).replace(tzinfo=LOCAL_TZ)
 
                         attendees = event.get("attendees", [])
+                        organizer = event.get("organizer", {})
+                        organizer_email = organizer.get("email")
+                        organizer_name = organizer.get("displayName")
 
                         # Add event even without attendees for admin view
                         if attendees:
@@ -211,6 +201,8 @@ def get_appointments_by_date(
                                     "attendee_name": attendee.get(
                                         "displayName", attendee.get("email", "")
                                     ),
+                                    "organizer_email": organizer_email,
+                                    "organizer_name": organizer_name,
                                     "datetime": appointment_datetime,
                                     "date": appointment_datetime.date(),
                                     "time": appointment_datetime.time(),
@@ -225,6 +217,8 @@ def get_appointments_by_date(
                                 "event_summary": summary,
                                 "attendee_email": None,
                                 "attendee_name": "No attendee",
+                                "organizer_email": organizer_email,
+                                "organizer_name": organizer_name,
                                 "datetime": appointment_datetime,
                                 "date": appointment_datetime.date(),
                                 "time": appointment_datetime.time(),
@@ -257,7 +251,7 @@ def get_matched_appointments(
     last_name: str,
     start_time: datetime,
     service: str,
-    service_account_file: str | List[str] = None,
+    service_account_file: str | List[str] | None = None,
     calendar_ids_file: str = "calendars.json",
 ) -> List[Dict]:
     """
@@ -342,6 +336,9 @@ def get_matched_appointments(
                             ).replace(tzinfo=LOCAL_TZ)
 
                         attendees = event.get("attendees", [])
+                        organizer = event.get("organizer", {})
+                        organizer_email = organizer.get("email")
+                        organizer_name = organizer.get("displayName")
 
                         for attendee in attendees:
                             appointment = {
@@ -352,6 +349,8 @@ def get_matched_appointments(
                                 "attendee_name": attendee.get(
                                     "displayName", attendee.get("email", "")
                                 ),
+                                "organizer_email": organizer_email,
+                                "organizer_name": organizer_name,
                                 "datetime": appointment_datetime,
                                 "date": appointment_datetime.date(),
                                 "time": appointment_datetime.time(),
