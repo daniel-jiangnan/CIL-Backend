@@ -748,9 +748,11 @@ programs:
           - name: Ciara Lovelace
             email: ciara.lovelace@gmail.com
             phone: "(510) 841-4776"
+            booking_link: https://calendar.google.com/calendar/u/0?cid=YjY2ZWE5OTg4ZDVjNTI4NmZiOTNhZjhlNWU5M2JhNmJiODI1MzBlOTQ3Y2ZjYjRiNDE2YThkYWNkOTdmOGQxOUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t
           - name: Lucky Maxwell
             email: lucky.maxwell@gmail.com
             phone: "(510) 841-4776"
+            booking_link: https://calendar.google.com/calendar/u/0?cid=YjY2ZWE5OTg4ZDVjNTI4NmZiOTNhZjhlNWU5M2JhNmJiODI1MzBlOTQ3Y2ZjYjRiNDE2YThkYWNkOTdmOGQxOUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t
 
       - key: Youth Advocacy
         phone: "(510) 841-4776"
