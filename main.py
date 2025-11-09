@@ -15,35 +15,112 @@ from openai import OpenAI
 
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 DEEPSEEK_BASE_URL = "https://api.deepseek.com"
-DEEPSEEK_MODEL = "deepseek-chat"   
-
+DEEPSEEK_MODEL = "deepseek-chat"
 
 # ======================================================
-#  LOAD MULTI-ORGANIZATION CONFIG
+#  LOAD MULTI-ORGANIZATION CONFIG  (NEW YAML SCHEMA)
 # ======================================================
+
 CONFIG_DIR = "orgs"
 
-ORG_SERVICES: Dict[str, Dict[str, Any]] = {}
+# every org -> { program_name -> { description, keywords, services:{ service_key -> {...}} } }
+ORG_PROGRAMS: Dict[str, Dict[str, Any]] = {}
+# every org -> { program_name -> [keywords...] }，
 ORG_KEYWORDS: Dict[str, Dict[str, List[str]]] = {}
 
+
+def _ensure_list(x):
+    if not x:
+        return []
+    if isinstance(x, list):
+        return x
+    return [x]
+
+
+def _load_org_file(path: str) -> Dict[str, Any]:
+    """load yaml as programs_by_name structure"""
+    with open(path, "r", encoding="utf-8") as f:
+        raw = yaml.safe_load(f) or {}
+
+    programs = raw.get("programs", [])
+    if not isinstance(programs, list):
+        programs = []
+
+    programs_by_name: Dict[str, Any] = {}
+    program_keywords_by_name: Dict[str, List[str]] = {}
+
+    for p in programs:
+        pname = (p.get("name") or "").strip()
+        if not pname:
+            # skip NA program
+            continue
+
+        pdesc = p.get("description", "") or ""
+        pkw = _ensure_list(p.get("keywords"))
+
+        # services -> dict keyed by service.key
+        services_list = _ensure_list(p.get("services"))
+        services_by_key: Dict[str, Any] = {}
+        collected_keywords = [k.lower() for k in pkw if isinstance(k, str)]
+
+        for s in services_list:
+            if not isinstance(s, dict):
+                continue
+            skey = (s.get("key") or "").strip()
+            if not skey:
+                continue
+
+            sdesc = s.get("description", "") or ""
+            sphone = s.get("phone", "") or ""
+            skw = [k.lower() for k in _ensure_list(s.get("keywords")) if isinstance(k, str)]
+            scontacts = _ensure_list(s.get("contacts"))
+
+            #  service key as key
+            # e.g. "Whill Sales" -> ["whill", "sales"]
+            skey_terms = [t.strip().lower() for t in skey.replace("/", " ").replace("&", " ").split() if t.strip()]
+            all_s_keywords = list({*skw, *skey_terms})
+
+            services_by_key[skey] = {
+                "phone": sphone,
+                "description": sdesc,
+                "keywords": all_s_keywords,
+                "contacts": scontacts,
+            }
+
+            collected_keywords.extend(all_s_keywords)
+
+        programs_by_name[pname] = {
+            "description": pdesc,
+            "keywords": [k.lower() for k in collected_keywords],  
+            "services": services_by_key,
+        }
+
+        program_keywords_by_name[pname] = [k.lower() for k in collected_keywords]
+
+    return {
+        "programs_by_name": programs_by_name,
+        "program_keywords_by_name": program_keywords_by_name,
+    }
+
+
+# scan org path
 for filename in os.listdir(CONFIG_DIR):
-    if filename.endswith(".yaml"):
-        org = filename.replace(".yaml", "")
-        with open(os.path.join(CONFIG_DIR, filename), "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f)
-        ORG_SERVICES[org] = data
+    if not filename.endswith(".yaml"):
+        continue
+    org = filename.replace(".yaml", "")
+    loaded = _load_org_file(os.path.join(CONFIG_DIR, filename))
+    ORG_PROGRAMS[org] = loaded["programs_by_name"]
+    ORG_KEYWORDS[org] = loaded["program_keywords_by_name"]
 
-        tmp = {}
-        for cat, info in data.items():
-            kws = info.get("keywords", [])
-            tmp[cat] = [k.lower() for k in kws] if isinstance(kws, list) else []
-        ORG_KEYWORDS[org] = tmp
-
-if "default" not in ORG_SERVICES:
-    first = list(ORG_SERVICES.keys())[0]
-    ORG_SERVICES["default"] = ORG_SERVICES[first]
-    ORG_KEYWORDS["default"] = ORG_KEYWORDS[first]
-
+#  default
+if "default" not in ORG_PROGRAMS:
+    if ORG_PROGRAMS:
+        first = list(ORG_PROGRAMS.keys())[0]
+        ORG_PROGRAMS["default"] = ORG_PROGRAMS[first]
+        ORG_KEYWORDS["default"] = ORG_KEYWORDS[first]
+    else:
+        ORG_PROGRAMS["default"] = {}
+        ORG_KEYWORDS["default"] = {}
 
 # ======================================================
 #   Models
@@ -64,48 +141,82 @@ class ClassifyResponse(BaseModel):
     alternatives: List[Option]
     used_fallback: bool = False
 
-
 # ======================================================
-#   Keyword fallback
+#   Keyword fallback 
 # ======================================================
-def _keyword_guess(text: str, top_k: int, services, keywords) -> ClassifyResponse:
-    t = text.lower()
-    scores = []
-    for cat, kws in keywords.items():
-        score = sum(1 for w in kws if w in t)
-        scores.append((cat, score))
+def _keyword_guess(text: str, top_k: int, programs: Dict[str, Any], program_keywords: Dict[str, List[str]]) -> ClassifyResponse:
+    t = (text or "").lower()
+    scores: List[tuple[str, int]] = []
+    for pname, kwlist in program_keywords.items():
+        score = sum(1 for w in kwlist if w and w in t)
+        scores.append((pname, score))
     scores.sort(key=lambda x: x[1], reverse=True)
 
     if not scores or scores[0][1] == 0:
-        best_cat = list(services.keys())[0]
-        best = Option(category=best_cat, confidence=0.35, reasoning="Weak match",
-                      description=services[best_cat].get("description"))
+        # if not mathch, return first program as weak match
+        if programs:
+            best_cat = list(programs.keys())[0]
+            best = Option(
+                category=best_cat,
+                confidence=0.35,
+                reasoning="Weak match",
+                description=programs[best_cat].get("description", ""),
+            )
+        else:
+            best = Option(category="Unknown", confidence=0.0, reasoning="No programs loaded", description=None)
         return ClassifyResponse(best=best, alternatives=[], used_fallback=True)
 
     best_cat = scores[0][0]
-    alts = scores[1:top_k]
-    best = Option(category=best_cat, confidence=0.6, reasoning="Keyword match",
-                  description=services[best_cat].get("description"))
+    alts = [name for name, _ in scores[1:top_k]]
+
+    best = Option(
+        category=best_cat,
+        confidence=0.6,
+        reasoning="Keyword match",
+        description=programs.get(best_cat, {}).get("description", ""),
+    )
     alt_opts = [
-        Option(category=a, confidence=0.4, reasoning="Partial keyword match",
-               description=services[a].get("description")) for a, _ in alts
+        Option(
+            category=a,
+            confidence=0.4,
+            reasoning="Partial keyword match",
+            description=programs.get(a, {}).get("description", ""),
+        )
+        for a in alts
+        if a in programs
     ]
 
     return ClassifyResponse(best=best, alternatives=alt_opts, used_fallback=True)
 
-
 # ======================================================
 #   DeepSeek Non-Streaming Classification
+#   （categories = program name；services）
 # ======================================================
-def _call_llm(text: str, top_k: int, services, categories):
+def _call_llm(text: str, top_k: int, programs: Dict[str, Any], categories: List[str]):
     if not DEEPSEEK_API_KEY:
         raise RuntimeError("DeepSeek API key not configured")
 
     client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
 
+
+    compact_programs = {}
+    for pname, pdata in programs.items():
+        compact_programs[pname] = {
+            "description": pdata.get("description", ""),
+            "services": [
+                {
+                    "key": skey,
+                    "phone": sdata.get("phone", ""),
+                    "has_contacts": bool(sdata.get("contacts")),
+                    "has_keywords": bool(sdata.get("keywords")),
+                }
+                for skey, sdata in (pdata.get("services") or {}).items()
+            ],
+        }
+
     system_prompt = f"""
 You are a routing assistant for a Center for Independent Living (CIL).
-Classify into one of these program categories:
+Classify the user's message into ONE of these program categories (top-level programs):
 {json.dumps(categories, ensure_ascii=False)}
 
 Return STRICT JSON ONLY:
@@ -114,8 +225,8 @@ Return STRICT JSON ONLY:
   "alternatives": [{{"category": string, "confidence": number, "reasoning": string}}]
 }}
 
-Program definitions:
-{json.dumps(services, ensure_ascii=False, indent=2)}
+Program definitions (each program may contain multiple services):
+{json.dumps(compact_programs, ensure_ascii=False, indent=2)}
 """
 
     user_prompt = f"Message:\n{text}\nTop-K: {top_k}"
@@ -133,21 +244,79 @@ Program definitions:
     raw = resp.choices[0].message.content or "{}"
     return json.loads(raw)
 
-
 # ======================================================
 #   Streaming Chat for Conversation
 # ======================================================
+def _programs_for_prompt(programs: Dict[str, Any], max_services_each: int = 4) -> str:
+    lines = []
+    for pname, pdata in programs.items():
+        desc = (pdata.get("description") or "").strip()
+        lines.append(f"- Program: {pname} — {desc[:200]}{'...' if len(desc) > 200 else ''}")
+
+        sdict = pdata.get("services") or {}
+        if not sdict:
+            continue
+
+        cnt = 0
+        for skey, sdata in sdict.items():
+            phone = sdata.get("phone") or ""
+            contacts = sdata.get("contacts") or []
+
+            if contacts:
+                # 展示最多前2个联系人
+                c_lines = []
+                for c in contacts[:2]:
+                    name = c.get("name","")
+                    email = c.get("email","")
+                    c_lines.append(f"{name}{f' <{email}>' if email else ''}")
+                contacts_str = "; ".join(c_lines)
+            else:
+                contacts_str = ""
+
+            line = f"    • Service: {skey}"
+            if phone:
+                line += f" (Phone: {phone})"
+            if contacts_str:
+                line += f" — Contacts: {contacts_str}"
+
+            lines.append(line)
+
+            cnt += 1
+            if cnt >= max_services_each:
+                lines.append("    • ...")
+                break
+
+    return "\n".join(lines)
+
+
+
 def stream_chat(messages, organization="default"):
-    services = ORG_SERVICES.get(organization, ORG_SERVICES["default"])
+    org = organization if organization in ORG_PROGRAMS else "default"
+    programs = ORG_PROGRAMS.get(org, {})
 
     system_prompt = f"""
-You are a friendly intake assistant at a Center for Independent Living.
-Your job is to warmly ask questions, understand needs, and suggest appropriate services.
-Keep responses short, supportive, and conversational.
+    You are a warm and helpful intake navigator at a Center for Independent Living.
 
-Available services:
-{json.dumps(services, ensure_ascii=False, indent=2)}
-"""
+    Your job:
+    1. Understand the user's need.
+    2. Identify the MOST relevant program.
+    3. IF POSSIBLE, recommend a SPECIFIC SERVICE under that program.
+    4. When recommending a service, ALWAYS include any available:
+    - Contact person name(s)
+    - Email(s)
+    - Phone number(s)
+
+    Rules:
+    - Keep responses short (2–4 sentences).
+    - If the exact service is unclear, ask **one clarifying question** before recommending.
+    - If a service has no direct contact, then share:
+    • Another service under the same program that DOES have a contact
+    • OR the program’s main phone number
+    - Do NOT output JSON. Respond conversationally and kindly.
+
+    Available programs & services:
+    {_programs_for_prompt(programs)}
+    """
 
     client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url=DEEPSEEK_BASE_URL)
 
@@ -165,42 +334,52 @@ Available services:
         if content:
             yield content
 
-
-
 # ======================================================
 #   Classify Orchestrator
 # ======================================================
 def classify(text: str, top_k: int = 2, organization: str = "default") -> ClassifyResponse:
-    services = ORG_SERVICES.get(organization, ORG_SERVICES["default"])
-    keywords = ORG_KEYWORDS.get(organization, ORG_KEYWORDS["default"])
-    categories = list(services.keys())
+    org = organization if organization in ORG_PROGRAMS else "default"
+    programs = ORG_PROGRAMS.get(org, {})
+    program_keywords = ORG_KEYWORDS.get(org, {})
+    categories = list(programs.keys())
+
+    if not categories:
+        # fall back no programs
+        best = Option(category="Unknown", confidence=0.0, reasoning="No programs loaded", description=None)
+        return ClassifyResponse(best=best, alternatives=[], used_fallback=True)
 
     try:
-        data = _call_llm(text, top_k, services, categories)
+        data = _call_llm(text, top_k, programs, categories)
         best = data.get("best", {})
-        alts = data.get("alternatives", [])
+        alts = _ensure_list(data.get("alternatives"))
 
+        best_cat = best.get("category", categories[0])
         best_opt = Option(
-            category=best.get("category", categories[0]),
+            category=best_cat,
             confidence=float(best.get("confidence", 0.5)),
             reasoning=best.get("reasoning"),
-            description=services.get(best.get("category", ""), {}).get("description")
+            description=programs.get(best_cat, {}).get("description", ""),
         )
 
-        alt_opts = [
-            Option(
-                category=o.get("category"),
-                confidence=float(o.get("confidence", 0.3)),
-                reasoning=o.get("reasoning"),
-                description=services[o.get("category", "")].get("description")
-            ) for o in alts[:top_k-1]
-        ]
+        alt_opts: List[Option] = []
+        for o in alts[: max(0, top_k - 1)]:
+            oc = o.get("category")
+            if not oc or oc not in programs:
+                continue
+            alt_opts.append(
+                Option(
+                    category=oc,
+                    confidence=float(o.get("confidence", 0.3)),
+                    reasoning=o.get("reasoning"),
+                    description=programs.get(oc, {}).get("description", ""),
+                )
+            )
 
         return ClassifyResponse(best=best_opt, alternatives=alt_opts, used_fallback=False)
 
     except Exception:
-        return _keyword_guess(text, top_k, services, keywords)
-
+        # fall back to keyword matching
+        return _keyword_guess(text, top_k, programs, program_keywords)
 
 # ======================================================
 #   FastAPI
@@ -208,7 +387,7 @@ def classify(text: str, top_k: int = 2, organization: str = "default") -> Classi
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
