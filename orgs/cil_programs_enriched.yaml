@@ -1,0 +1,793 @@
+organization: CIL
+
+programs:
+  - name: Systems Change Advocacy
+    description: >
+      The Systems Change Advocacy Program works to advance disability rights, equity,
+      and community inclusion through campaigns, coalition building, leadership development,
+      and cross-movement partnership. This program supports disabled community members in
+      shaping policy, participating in advocacy spaces, and influencing decisions that
+      impact our lives.
+
+    keywords:
+      - advocacy
+      - disability justice
+      - policy change
+      - community organizing
+      - leadership development
+      - access equity
+
+    services:
+
+      - key: Campaigns & Initiatives
+        phone: "(510) 841-4776"
+        description: |
+          Issues our Advocacy Team currently focuses on include:
+
+          - Affordable and Accessible Housing
+          - Transportation Justice
+          - Masking and COVID-19 Equity
+          - Long-Term Supports and Services (LTSS), In-Home Supports and Services (IHSS),
+            and creating a more robust and dignified long-term care system
+          - Uplifting movements at the intersections of disability and racial,
+            gender, and environmental justice
+        keywords: []
+        contacts:
+          - name: "Michai Freeman"
+            email: "michai.freeman@gmail.com"
+            phone: "(510) 841-4776"
+
+      - key: Advocacy Training
+        phone: "(510) 841-4776"
+        description: |
+          Are you interested in becoming a board, committee, or council member for a nonprofit
+          or governmental body? Are you passionate about deepening your community organizing
+          skills? Do you want to start your own peer support group?
+
+          Sign up for our Advocacy Leadership Training to learn how these groups operate and
+          develop leadership skills to bring your experiences and perspectives to the table.
+        keywords: []
+        contacts:
+          - name: "Michai Freeman"
+            email: "michai.freeman@gmail.com"
+            phone: "(510) 841-4776"
+
+
+  - name: Assistive Technology
+    description: |-
+      Provides support in identifying, trying, obtaining, and maintaining assistive devices
+      that improve daily living, communication, mobility, and access. This includes device
+      lending, short-term loans, repairs, feature training, and help evaluating whether a
+      device is a good fit. Examples include power wheelchairs, mobility scooters, walkers,
+      hearing amplification devices, magnifiers, text-to-speech tools, screen readers, and
+      speech-generating communication devices.
+    keywords:
+      - wheelchair
+      - mobility device
+      - hearing device
+      - AAC
+      - communication device
+      - screen reader
+      - assistive tech
+      - equipment loan
+    services:
+      - key: AT Loaners & Repairs
+        description: |-
+          The CIL has a wide array of used assistive technology (AT) devices that you can borrow!
+          The exact range of available loaner devices is constantly changing. Check out the product
+          types linked below, and contact us if you have goals that could be furthered by a loan.
+
+          Don’t see the type of assistive device you are interested in on this list? We might have it,
+          and if you contact us to let us know your goals, and we’ll try to help you find ways to get
+          the device!
+        product_types:
+          - Portable Ramps
+          - Modular Ramps
+          - Electric Wheelchairs
+          - Manual Wheelchairs
+          - Electric Scooters
+          - "Rollators, Walkers, Knee scooters"
+          - "Bathroom: grab bars, commodes, and stools."
+          - "Bedroom: grab bars and rails"
+          - "Tech: adaptive switches and wifi-connected plugs"
+          - Emergency tech
+        keywords: []
+        contacts:
+          - name: Morgan Kanninen
+            email: morgan.kanninen@gmail.com
+            phone: "(510) 841-4776"
+
+      - key: Voice Options
+        description: |-
+          CIL offers free loaner assistive technology (AT) devices as part of our AT Program.
+
+          The Voice Options Program
+          The Voice Options Program offers eligible Californians who are unable to speak,
+          or who have difficulty speaking, with a free speech-generating device. The goal
+          of this program is to ensure full and equal telephone communications access for all
+          Californians with disabilities. When it comes to choosing a speech-generating application,
+          it is imperative to select one that highlights your strengths, skills, and fully meets your
+          needs without leaving you feeling restricted. Through this program, any eligible Californian
+          referred to a Voice Options provider will have the opportunity to test five different speech
+          generating applications for up to 14 days.
+        keywords: []
+        contacts:
+          - name: Morgan Kanninen
+            email: morgan.kanninen@gmail.com
+            phone: "(510) 841-4776"
+
+      - key: Whill Sales
+        description: |-
+          CIL offers free test rides and education about Whill brand powerchairs as our AT Program.
+
+          We are happy to help you compare their chairs to the competition and test ride other brands
+          if we have any in our collection of donated devices at the time of your visit.
+
+          CIL also is a licensed vendor of Whill brand powerchairs, because we are impressed with the
+          design, build quality, and customer service of this brand’s powerchairs.
+
+          Our first priority is helping you find the best device to fit your goals — not making sales!
+          If the best for you happens to be a Whill product, we’re happy to sell it to you if we are who
+          you’d like to purchase from.
+
+          Or we can help you look online for alternatives!
+        keywords: []
+        contacts:
+          - name: Morgan Kanninen
+            email: morgan.kanninen@gmail.com
+            phone: "(510) 841-4776"
+
+      - key: Donate AT
+        description: |-
+          Do you have A.T. devices that aren’t being used? CIL also offers free loaner equipment
+          as part of our Assistive Technology Program. Please note that we have a limited number of
+          wheelchairs available as this service depends on donated equipment.
+
+          If you have any issues using this form please call us at 510-841-4776 or email us at
+          info@thecil.org.
+
+          Someone from our team will reach out shortly!
+        keywords: []
+        contacts:
+          - name: Morgan Kanninen
+            email: morgan.kanninen@gmail.com
+            phone: "(510) 841-4776"
+
+  - name: Travel Program
+    description: >
+      The Travel Program supports disabled community members in building the confidence
+      and practical skills needed to navigate Bay Area public transportation systems safely
+      and independently. Through individualized training, group workshops, and accessibility
+      support services, participants learn how to plan, navigate, and complete travel across
+      multiple transit systems.
+
+    keywords:
+      - public transportation
+      - independent travel
+      - mobility skills
+      - transit training
+      - disability transportation access
+
+    services:
+
+      - key: One-on-One Travel Training
+        phone: "(510) 841-4776"
+        description: |
+          Our 1-on-1 travel training provides clients with the personal attention and access-centered
+          knowledge of our travel trainers. Our goal is to help clients feel confident in independently
+          navigating the San Francisco Bay Area using public transportation.
+
+          With CIL’s 1-on-1 Training, you’ll learn to:
+          - Access AC Transit and BART
+          - Master specific routes of your choice
+          - Apply for discounted transit cards
+          - Plan trips using trip planner applications
+          - Safely use a mobility device
+          - Travel through all kinds of weather
+        keywords: []
+        contacts:
+          - name: "Ciara Lovelace"
+            email: "ciara.lovelace@gmail.com"
+            phone: "(510) 841-4776"
+          - name: "Lucky Maxwell"
+            email: "lucky.maxwell@gmail.com"
+            phone: "(510) 841-4776"
+
+      - key: Group Travel Workshops
+        phone: "(510) 841-4776"
+        description: |
+          Our group travel training modules are created to train groups on different travel topics,
+          ranging from specific transit systems to general travel safety and navigation skills. We
+          present group travel workshops remotely to prioritize the health and safety of participants
+          and staff.
+
+          The goal is to provide travel knowledge and confidence so participants can navigate Bay Area
+          public transportation independently. Workshops can be customized to the specific travel
+          goals and needs of each group.
+
+          Training modules may include:
+          - AC Transit
+          - Amtrak
+          - BART
+          - Travel Safety
+          - Trip Planning
+        keywords: []
+        contacts:
+          - name: "Ciara Lovelace"
+            email: "ciara.lovelace@gmail.com"
+            phone: "(510) 841-4776"
+          - name: "Lucky Maxwell"
+            email: "lucky.maxwell@gmail.com"
+            phone: "(510) 841-4776"
+
+      - key: Wheelchair Marking & Tethering
+        phone: "(510) 841-4776"
+        description: |
+          This program, offered in collaboration with AC Transit, is designed to identify key
+          securement points on all mobility aids to support safe, accessible, and effective bus
+          travel for wheelchair and mobility device users.
+
+          The goal is to increase the accessibility of AC Transit buses by supporting proper and
+          safe wheelchair securement, improving both rider experience and operator understanding.
+
+          Tether straps and wheelchair marking are provided at no cost.
+
+          Workshops are held at the CIL offices at the Ed Roberts Campus in Berkeley.
+
+          To attend, contact AC Transit’s WMTSP Hotline at 510-891-7113
+          or email kridgeway@actransit.org to make an appointment.
+        keywords: []
+        contacts:
+          - name: "Ciara Lovelace"
+            email: "ciara.lovelace@gmail.com"
+            phone: "(510) 841-4776"
+          - name: "Lucky Maxwell"
+            email: "lucky.maxwell@gmail.com"
+            phone: "(510) 841-4776"
+
+
+  - name: Core Services
+    description: >
+      Core Services at CIL focus on supporting people with disabilities through peer support,
+      benefits navigation, community resource referrals, personal attendant support, digital
+      access assistance, housing navigation, and senior wellness support.
+
+    keywords:
+      - independent living
+      - peer support
+      - benefits navigation
+      - disability rights
+      - personal attendant support
+      - housing assistance
+      - digital access
+      - senior wellness
+
+    services:
+
+      - key: Acquired Disability Group
+        phone: "(510) 841-4776"
+        description: |
+          Going through a significant life change can be difficult. Let’s discuss it at this peer
+          support group held on the first Sunday of every month. This peer support group discusses
+          major life changes a person with an acquired disability may be facing, especially for
+          adults under 40. This support group is very flexible, so come every month or just come
+          once! We always welcome input. Please tell us how you can best be supported.
+
+          When: First Sunday of every month from 4:00 PM to 5:30 PM
+          Location: Google Meet
+
+          For Group Guidelines and more information about discussion topics, reach out to:
+          Christina Leffmann at cleffmann@thecil.org.
+        keywords: []
+        contacts:
+          - name: "Christina Leffmann"
+            email: "cleffmann@thecil.org"
+            phone: "(510) 841-4776"
+
+      - key: Benefits Counseling
+        phone: "(510) 841-4776"
+        description: |
+          Want to learn about Social Security Disability Benefits, State Disability Insurance,
+          MediCal, and Medicare programs for people with disabilities? CIL staff can provide
+          information about:
+
+          - Where and how to apply for benefits
+          - SSDI & SSI work incentive programs that allow people to try working without immediately
+            losing benefits or health insurance
+          - How to report earnings and how to respond to Social Security overpayment notices
+          - ABLE Accounts – tax-advantaged savings accounts that allow eligible disabled people to
+            save money without affecting benefits
+        keywords: []
+        contacts:
+          - name: "Robin Earth"
+            email: "robin.earth@gmail.com"
+            phone: "(510) 841-4776"
+
+      - key: Personal Attendant Services
+        phone: "(510) 841-4776"
+        description: |
+          The Personal Attendant Services (PAS) Program supports people with disabilities and those
+          who love them in finding, hiring, and communicating effectively with care providers. CIL
+          maintains a widely used hub of PAS knowledge and best practices drawn from community
+          experience.
+
+          Finding and keeping attendants can be challenging and emotionally difficult, especially
+          during times of crisis. While CIL does not hire attendants directly, staff provide tools,
+          support, information, and strategies to help consumers build sustainable care networks.
+
+          Service Goals:
+          - Learn how and where to find personal attendants
+          - Gain skills in interviewing and selecting compatible support staff
+          - Build communication strategies for care work relationships
+          - Organize and maintain effective care schedules
+
+          CIL may coordinate with case managers (with consent) to support stronger continuity of care.
+          CIL also works with organizations to improve working conditions for care providers.
+        keywords: []
+        contacts:
+          - name: "Robin Earth"
+            email: "robin.earth@gmail.com"
+            phone: "(510) 841-4776"
+          - name: "Fox Machado"
+            email: "Fox.machado@gmail.com"
+            phone: "(510) 841-4776"
+
+      - key: Informational & Referral
+        phone: "(510) 841-4776"
+        description: |
+          CIL provides disability-related information and referrals to people with disabilities,
+          their families, service providers, employers, and others. Topics include:
+
+          - Disability Rights and the ADA
+          - SSI and SSDI Benefits
+          - Transportation and accessible mobility
+          - Counseling and personal support
+          - Personal Attendant Services
+          - Other Independent Living Centers
+          - Community resources for accessibility, disability services, and advocacy
+
+          If you have questions about disability or available services, CIL’s I&R specialists can help.
+        keywords: []
+        contacts:
+          - name: "Robin Earth"
+            email: "robin.earth@gmail.com"
+            phone: "(510) 841-4776"
+          - name: "Alexander Sing"
+            email: "alexander.sing@gmail.com"
+            phone: "(510) 841-4776"
+
+      - key: Digital Divide
+        phone: "(510) 841-4776"
+        description: |
+          The Digital Divide Program supports older adults in learning to use computers, smartphones,
+          smart devices, and the internet with confidence and safety. The program provides one-on-one
+          support with:
+
+          - Device setup and use
+          - Connecting with loved ones online
+          - Web browsing and digital communication
+          - Protecting privacy and avoiding scams
+          - Understanding web security best practices
+
+          In-person and virtual sessions available.
+          By Appointment: Tuesdays, 10 a.m. – 2 p.m.
+          Walk-in Assistance: Wednesdays & Thursdays, 10 a.m. – 2 p.m.
+        keywords: []
+        contacts:
+          - name: "Lawrence Carew"
+            email: "lawrence.carew@gmail.com"
+            phone: "(510) 841-4776"
+
+      - key: Living Well Senior Program
+        phone: "(510) 841-4776"
+        description: |
+          In the Living Well Senior Program, peer counselors support older adults (55+) in improving
+          health, confidence, and independence through structured 10-week workshops.
+
+          Areas of focus include:
+          - Setting and achieving wellness goals
+          - Problem solving and managing frustration
+          - Communication and self-advocacy
+          - Physical activity and nutrition
+          - Lifelong wellness strategies
+        keywords: []
+        contacts:
+          - name: "Lawrence Carew"
+            email: "lawrence.carew@gmail.com"
+            phone: "(510) 841-4776"
+          - name: "Cara Bondulant"
+            email: "cara.bondulant@gmail.com"
+            phone: "(510) 841-4776"
+
+      - key: Housing Assistance
+        phone: "(510) 841-4776"
+        description: |
+          CIL’s Housing Advocates support individuals in developing housing self-advocacy skills and
+          navigating the Bay Area housing system. Support includes:
+
+          - 1-on-1 consultations to determine housing needs
+          - Assistance with applying to housing waitlists and programs
+          - Support in requesting and defending reasonable accommodations
+          - Guidance on communicating with housing authorities and landlords
+          - Resources for housing search and financial assistance programs
+        keywords: []
+        contacts:
+          - name: "Robin Earth"
+            email: "robin.earth@gmail.com"
+            phone: "(510) 841-4776"
+          - name: "Max Dolan"
+            email: "Max.dolan@gmail.com"
+            phone: "(510) 841-4776"
+          - name: "Karla Salazar"
+            email: "karla.salazar@gmail.com"
+            phone: "(510) 841-4776"
+
+      - key: Independent Living Peer Support
+        phone: "(510) 841-4776"
+        description: |
+          CIL’s Peer Support Specialists work with participants one-on-one, offering support grounded
+          in shared lived experience. Peer support can help with:
+
+          - Self-advocacy in housing, employment, healthcare, and other areas
+          - Navigating access barriers
+          - Connecting to peer support groups
+          - Planning and working toward personal independent living goals
+          - Referrals to other organizations and resources
+        keywords: []
+        contacts:
+          - name: "Robin Earth"
+            email: "robin.earth@gmail.com"
+            phone: "(510) 841-4776"
+
+
+  - name: Diversion and Transitions
+    description: >
+      CIL’s Diversion and Transitions Program supports people with disabilities in accessing
+      the resources necessary to live in the community rather than in institutions. The program
+      focuses on preventing unnecessary institutionalization and supporting successful transitions
+      from facilities and systems back into community living.
+
+    keywords:
+      - community living
+      - transition support
+      - diversion support
+      - deinstitutionalization
+      - independent living planning
+      - cross-system transitions
+
+    services:
+      - key: Diversion and Transitions
+        phone: "(510) 841-4776"
+        description: |
+          Center for Independent Living (CIL) assists people with disabilities in obtaining resources
+          and services needed in order to be able to remain living in the community instead of in
+          institutions. We also assist people who are currently residing in institutions (such as nursing
+          facilities, congregate care facilities, and mental health hospitals) who want to transition out
+          of facilities and back to living independently in the community.
+
+          More recently, CIL has also been focusing on diversion and transition support involving:
+          - Foster care transitions
+          - Reentry from incarceration
+          - Avoiding homelessness / supporting unhoused youth and adults
+
+          CIL provides support in developing transition and diversion plans, and through partnership
+          with the CA Department of Rehabilitation, can provide funding (when available) to support
+          implementing those plans.
+
+          CIL conducts outreach in facilities and across community and government partner networks to
+          identify people in need of diversion or transition support.
+
+          CIL collaborates with individuals, families, caregivers, and partners before, during, and after
+          diversion and transitions to advocate for and uphold independence and community living over
+          institutionalization.
+        keywords: []
+        contacts:
+          - name: "Robin Earth"
+            email: "robin.earth@gmail.com"
+            phone: "(510) 841-4776"
+          - name: "Tiffany Hickerson"
+            email: "tiffany.hikerson@gmail.com"
+            phone: "(510) 841-4776"
+
+  - name: Emergency Preparedness
+    description: >
+      CIL’s Emergency Preparedness Program supports disabled community members and older adults
+      in preparing for, responding to, and recovering from emergencies, disasters, and planned
+      power shut-offs. The program also functions as a Disability Disaster Access and Resources
+      Center (DDARC), providing education, planning support, emergency supplies, and community-
+      centered leadership development.
+
+    keywords:
+      - emergency preparedness
+      - disaster readiness
+      - power shut-off support
+      - disability disaster access
+      - resiliency planning
+      - peer-led emergency training
+      - independent living safety
+
+    services:
+
+      - key: Individual Emergency Planning
+        phone: "(510) 841-4776"
+        description: |
+          How will I get out of my house safely during an evacuation warning? Where are my back-up
+          medications? Who will I call to let them know I’m safe after a disaster? How do I run my
+          CPAP machine and charge my wheelchair during a power outage? Will my Service Animal be okay
+          during an emergency?
+
+          All of these questions and more can be really important parts to your individual/household
+          emergency plan. As a Listos Partner and Disability Disaster Access and Resources Center
+          (DDARC), CIL offers 1-on-1 Emergency and Resiliency Planning for cross-disability communities
+          and older adults in order to increase individual readiness in times of disaster or power shut-offs.
+
+          1-on-1 Emergency and Resiliency Planning is a person-centered process that takes into account
+          each person’s identities, location, access needs, and unique resources, and is peer-led,
+          meaning it’s emergency planning by people with disabilities, alongside people with disabilities.
+
+          CIL also has starter emergency kits for our communities to kickstart their emergency preparedness
+          journey! We can help you plan and strategize what to put in your kit to keep you and your family
+          safe and ready.
+
+          Interested in getting started on your own? You can begin creating your plan today!
+        keywords: []
+        contacts:
+          - name: "Sheela Gunn"
+            email: "Sheela.gunn@gmail.com"
+            phone: "(510) 841-4776"
+
+      - key: DDAR Services & Portable Battery Program
+        phone: "(510) 841-4776"
+        description: |
+          CIL is a Disability Disaster Access and Resources Center (DDARC), thanks to partnership from
+          the California Foundation of Independent Living Centers and PG&E. The purpose of a DDARC is
+          to support people with disabilities and older adults before, during, and after Public Safety
+          Power Shut Offs (PSPS) and disasters, such as wildfires, heatwaves, earthquakes, and more,
+          and to ensure our communities can meet their medical, safety, and resiliency needs.
+
+          As a DDARC, CIL provides:
+          - 1-on-1 individual emergency planning
+          - Support with signing up for critical alert programs such as Alameda County Alerts, Medical Baseline, and PSPS Alerts
+          - Distribution of critical resources and accommodations during power outages, wildfires, and severe weather
+          - Backup batteries and supplies for consumers who rely on powered medical equipment
+
+          What is a Public Safety Power Shut-Off (PSPS)?
+          A PSPS occurs when PG&E turns off power to reduce wildfire risk during severe weather.
+          PG&E issues multiple alerts before, during, and after a PSPS event, including “power is off,”
+          “weather all clear,” and “power restored” notifications.
+
+          Consumers enrolled in the Medical Baseline program may receive additional alerts, including
+          direct calls or doorbell notifications to ensure awareness before a PSPS event.
+        keywords: []
+        contacts:
+          - name: "Sheela Gunn"
+            email: "Sheela.gunn@gmail.com"
+            phone: "(510) 841-4776"
+
+      - key: Peer Ambassador Program
+        phone: "(510) 841-4776"
+        description: |
+          CIL’s Emergency Preparedness and Resiliency Peer Ambassador Program engages, educates,
+          and empowers people with disabilities and seniors to learn comprehensive emergency
+          preparedness, response, and recovery skills, and bring that knowledge back into their
+          communities.
+
+          The program uses a peer-based, train-the-trainer model that includes:
+          - A two-month education series on emergency readiness and disaster management
+          - Training in public speaking, leadership, and community organizing
+          - Support in designing and leading emergency-related community projects
+          - Project implementation, community engagement tracking, and impact assessment
+
+          Peer Ambassadors are compensated $250/month depending on their level of participation
+          (6, 12, or 18-month tracks). Ambassadors attend training, participate in bi-weekly meetings,
+          and complete at least one community impact project.
+        keywords: []
+        contacts:
+          - name: "Sheela Gunn"
+            email: "Sheela.gunn@gmail.com"
+            phone: "(510) 841-4776"
+
+      - key: Community Events and Education
+        phone: "(510) 841-4776"
+        description: |
+          As a DDARC and Listos California partner, CIL provides community education workshops on
+          disaster readiness, response, and recovery. Training topics include:
+
+          - Emergency Preparedness 101 for Cross-Disability Communities and Older Adults
+          - Emergency planning for caregivers
+          - Active shooter response considerations
+          - Emergency strategies for unhoused neighbors
+          - Building accessible household emergency kits
+          - Understanding alert systems and communication channels
+
+          Training emphasizes accessibility and addresses needs related to assistive technology,
+          mobility devices, communication supports, and sensory access.
+
+          Organizations and community groups can request trainings, and a staff member will respond
+          within 2–3 business days.
+        keywords: []
+        contacts:
+          - name: "Sheela Gunn"
+            email: "Sheela.gunn@gmail.com"
+            phone: "(510) 841-4776"
+
+
+  - name: Residential Access
+    description: >
+      The Residential Access Program supports disabled residents in making their homes
+      safer, more accessible, and easier to navigate. This program focuses on improving
+      home environments to increase independence and support long-term community living.
+
+    keywords:
+      - home modifications
+      - accessibility
+      - independent living
+      - aging in place
+      - disability access
+      - residential support
+
+    services:
+      - key: Residential Access
+        phone: "(510) 841-4776"
+        description: |
+          By building or installing various home modifications, CIL’s Residential Access Program helps
+          residents live more safely and independently in their homes.
+
+          Examples of modifications include:
+          - Exterior lifts or ramps
+          - Grab bars
+          - Standing poles
+          - Flexible shower hoses
+          - Flashing doorbells
+          - Tactile stair treads
+          - Handrails
+          - And other accessibility improvements
+
+          This program is free for low to moderate-income Berkeley residents who have a verified disability.
+          Both homeowners and renters are eligible. It is only available to residents of the City of Berkeley.
+
+          Participants must provide:
+          - Proof of disability
+          - Proof of Berkeley residency
+          - Proof of income qualification and required documentation
+
+          For reference, the following table shows the income limits in 2021 for what the City of Berkeley
+          considered low to moderate-income.
+
+          If a resident does not meet the low-to-moderate income eligibility requirements, CIL also offers
+          a fee-for-service consultation for East Bay homeowners to determine the best ways to make their
+          homes more accessible.
+
+        keywords: []
+        contacts:
+          - name: "John Benson"
+            email: "john.benson@gmail.com"
+            phone: "(510) 841-4776"
+
+  - name: Youth Program
+    description: >
+      CIL Youth Programs support disabled youth (ages 14–30) with skill-building,
+      community, advocacy, and independence through multiple tracks including coding,
+      social connection, college & vocational support, coastal/outdoor mobility, and
+      individualized coaching.
+    keywords: []
+    services:
+      - key: Codestars
+        phone: "(510) 841-4776"
+        description: |
+          The Codestars coding course is a virtual coding-centric workshop designed specifically for
+          students on the spectrum and with other disabilities. We believe that everyone can learn to code
+          and create amazing things with technology, regardless of their abilities or challenges. Our
+          classes are tailored to meet the unique needs and learning styles of our students, providing a
+          supportive and inclusive environment where they can thrive.
+
+          Throughout the series, students will learn the fundamental concepts and skills of web design
+          and python programming. They will start by designing and building their own websites using
+          HTML, CSS, and JavaScript, and then move on to more advanced topics such as responsive
+          design, user experience, and web accessibility. In the python classes, students will learn how to
+          write code that can solve problems, automate tasks, and interact with data and other programs.
+          They will also have the opportunity to work on projects that allow them to apply their new skills
+          and creativity.
+        keywords: []
+        contacts:
+          - name: Lawrence Carew
+            email: lawrence.carew@gmail.com
+            phone: "(510) 841-4776"
+
+      - key: Youth Social Club
+        phone: "(510) 841-4776"
+        description: |
+          CIL’s Social Club is a space where disabled youth between the ages of 14 and 30 can meet to
+          engage in fun activities, connect with their peers and practice communication skills.
+
+          Social Club meets twice a month. CIL typically offers Social Club online on the second Wednesday
+          of the month from 3:30–4:30, and in person at Ed Roberts Campus on the fourth Wednesday of the
+          month from 3:30–4:30.
+
+          We do different activities each month including dance, art, crafts and games. All youth who
+          identify as disabled are welcome to attend, and we can modify activities as needed for individual
+          participants.
+
+          Caregivers and family members are also welcome, and snacks are provided at in-person events.
+
+          Please fill out the interest form below, or email us directly to receive invites to upcoming events.
+        keywords: []
+        contacts: []
+
+      - key: College & Vocational Support
+        phone: "(510) 841-4776"
+        description: |
+          Supporting youth and adults in providing the tools to find employment by hosting workshops that
+          center around resume building, cover letter writing, interview preparation, disability disclosure,
+          reasonable accommodations and more, all through the lens of disability. We also provide support
+          to individuals with one-on-one vocational support services / peer counseling. We are partnered
+          with several disability-centered job boards, Bay Area companies and organizations, and are
+          always looking to further develop our relationships within the community to help achieve our goal
+          of supporting all our job-seeking consumers in finding meaningful and successful employment.
+          Additionally, our program partners with local colleges and universities in hosting workshops,
+          panels, and seminars around topics of employment, accommodations, and disability disclosure.
+
+          Support Services Include:
+          - Workshops
+          - 1 on 1 campus and vocational support
+          - Reasonable accommodations in both employment and academic settings support
+          - Resume and cover letter building, interview preparation, and navigating disability disclosure
+        keywords: []
+        contacts:
+          - name: Camiel Cayes
+            email: camiel.cayes@gmail.com
+            phone: "(510) 841-4776"
+
+      - key: Coastal Connections
+        phone: "(510) 841-4776"
+        description: |
+          CIL’s Coastal Connections Youth Program (CCYP) teaches and encourages youth with disabilities
+          to utilize public transportation to connect with nature, especially coastal environments.
+
+          Through CCYP, youth learn how to use public transit in the Bay Area to reach coastal environments.
+          Youth will learn the value of environmental stewardship by participating in a beach cleanup. Youth
+          will also learn about self-advocacy and leadership skills, and explore the connection between
+          environmental and disability justice movements.
+
+          The Coastal Connections Youth Program is a six week quarterly cohort program, where students
+          will meet once a week to develop different independent living skill sets.
+        keywords: []
+        contacts:
+          - name: Ciara Lovelace
+            email: ciara.lovelace@gmail.com
+            phone: "(510) 841-4776"
+          - name: Lucky Maxwell
+            email: lucky.maxwell@gmail.com
+            phone: "(510) 841-4776"
+
+      - key: Youth Advocacy
+        phone: "(510) 841-4776"
+        description: |
+          Youth Programs offers different options for youth with disabilities ages 14–30 to learn more about
+          advocacy and supporting causes that are important to them and their community. CIL’s
+          Self-Advocacy Workshop series is offered in the classroom in partnership with local school
+          districts, or at Ed Roberts Campus. Staff at CIL are available to mentor youth individually to
+          develop independent living skills, and to support youth to advocate for disabled rights in the
+          community.
+
+          Community Advocacy
+          As part of Youth Programs, youth have the opportunity to work alongside CIL staff to learn
+          leadership, public speaking, and community organizing skills, and create change in their
+          communities around issues that are important to disabled youth. With CIL’s Youth Program, youth
+          have practiced writing testimony, and have spoken at City Council meetings and met with elected
+          officials. Youth have supported in designing and leading advocacy campaigns, community art
+          projects, and more. Are you interested in making an impact in your community, and developing new
+          community advocacy skills? Reach out to our CIL Youth Programs Staff!
+        keywords: []
+        contacts: []
+
+      - key: 1-on-1 Support
+        phone: "(510) 841-4776"
+        description: |
+          Youth can work 1-on-1 with Youth Programs staff to receive support and learn new skills in areas
+          that are important to them. Youth can create an Independent Living Plan, set goals, and lay out
+          steps to reach those goals in areas of housing, working or volunteering, social opportunities,
+          further education, independent living, and much more. Contact CIL Youth Programs staff to set up
+          your 1-on-1 appointment today!
+        keywords: []
+        contacts: []

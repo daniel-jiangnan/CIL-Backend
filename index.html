@@ -24,9 +24,9 @@ let recognition;
 
 function speak(text) {
     const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = "en-US";  // 如果是中文自动改 "zh-CN"
+    utter.lang = "en-US";  
     utter.rate = 1.0;
-    speechSynthesis.cancel(); // 防止叠音
+    speechSynthesis.cancel(); 
     speechSynthesis.speak(utter);
 }
 
